@@ -7,6 +7,7 @@ pub enum Token {
     Symbol(String),
     Number(f64),
     String(String),
+    Quote, // '
 }
 
 pub struct Lexer {
@@ -39,6 +40,10 @@ impl Lexer {
                 }
                 '"' => {
                     tokens.push(self.read_string()?);
+                }
+                '\'' => {
+                    self.advance();
+                    tokens.push(Token::Quote);
                 }
                 _ => {
                     if ch.is_digit(10) || (ch == '-' && self.peek_next_is_digit()) {
