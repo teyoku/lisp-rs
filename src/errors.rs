@@ -4,6 +4,7 @@ use std::error::Error;
 pub enum LexerError {
     UnknownSymbol(char),
     UnterminatedString(String),
+    InvalidNumber(String),
 }
 
 impl std::fmt::Display for LexerError {
@@ -11,6 +12,7 @@ impl std::fmt::Display for LexerError {
         let error_msg = match self {
             LexerError::UnknownSymbol(ch) => &format!("Unknown symbol '{ch}'"),
             LexerError::UnterminatedString(s) => &format!("Unterminated string {s}"),
+            LexerError::InvalidNumber(n) => &format!("Invalid number '{n}'"),
         };
 
         write!(f, "[Lexer Error] {error_msg}")
