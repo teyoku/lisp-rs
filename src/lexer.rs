@@ -46,7 +46,7 @@ impl Lexer {
                     tokens.push(Token::Quote);
                 }
                 _ => {
-                    if ch.is_digit(10) || (ch == '-' && self.peek_next_is_digit()) {
+                    if ch.is_digit(10) || (ch == '-' && self.next_char_is_digit()) {
                         tokens.push(self.read_number()?);
                     } else if is_symbol_start(ch) {
                         tokens.push(Token::Symbol(self.read_symbol()));
@@ -60,8 +60,7 @@ impl Lexer {
         Ok(tokens)
     }
 
-    // Next char is a digit
-    fn peek_next_is_digit(&self) -> bool {
+    fn next_char_is_digit(&self) -> bool {
         self.chars
             .get(self.position + 1)
             .map_or(false, |c| c.is_digit(10))
