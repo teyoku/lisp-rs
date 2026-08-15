@@ -1,6 +1,6 @@
 use std::error::Error;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum LexerError {
     UnknownSymbol(char),
     UnterminatedString(String),
