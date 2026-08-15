@@ -10,8 +10,8 @@ pub enum Token {
 }
 
 pub struct Lexer {
-    pub chars: Vec<char>,
-    pub position: usize,
+    chars: Vec<char>,
+    position: usize,
 }
 
 impl Lexer {
