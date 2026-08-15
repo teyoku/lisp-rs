@@ -78,7 +78,7 @@ impl Lexer {
     }
 
     // Read and parse number
-    fn read_number(&mut self) -> Token {
+    fn read_number(&mut self) -> Result<Token, LexerError> {
         let mut number_str = String::new();
 
         while let Some(ch) = self.peek() {
@@ -90,8 +90,10 @@ impl Lexer {
             }
         }
 
-        let num = number_str.parse::<f64>().unwrap_or(0.0);
-        Token::Number(num)
+        let num = number_str
+            .parse::<f64>()
+            .map_err(|_| LexerError::InvalidNumber(number_str))?;
+        Ok(Token::Number(num))
     }
 
     // Read and parse symbol (+, -, *, /, <, >. etc..)
