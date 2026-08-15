@@ -27,7 +27,7 @@ impl Lexer {
         let mut tokens = Vec::new();
         while let Some(ch) = self.peek() {
             match ch {
-                ' ' | '\t' | '\n' | '\r' => {
+                _ if ch.is_whitespace() => {
                     self.advance();
                 }
                 '(' => {
@@ -84,9 +84,22 @@ impl Lexer {
     // Read and parse number
     fn read_number(&mut self) -> Result<Token, LexerError> {
         let mut number_str = String::new();
+        let mut has_dot = false;
+
+        // Handle leading minus sign
+        if let Some(ch) = self.peek() {
+            if ch == '-' {
+                number_str.push(ch);
+                self.advance();
+            }
+        }
 
         while let Some(ch) = self.peek() {
-            if ch.is_digit(10) || ch == '.' || ch == '-' {
+            if ch.is_digit(10) {
+                number_str.push(ch);
+                self.advance();
+            } else if ch == '.' && !has_dot {
+                has_dot = true;
                 number_str.push(ch);
                 self.advance();
             } else {
@@ -205,4 +218,38 @@ mod tests {
 
         Ok(())
     }
+
+    #[test]
+    fn test_tokenize_5() -> Result<(), LexerError> {
+        let mut lexer = Lexer::new("(- 1 2)");
+        let tokens = lexer.tokenize()?;
+
+        assert_eq!(
+            tokens,
+            vec![
+                Token::LParen,
+                Token::Symbol("-".to_string()),
+                Token::Number(1.0),
+                Token::Number(2.0),
+                Token::RParen
+            ]
+        );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_tokenize_number() -> Result<(), LexerError> {
+        let mut lexer = Lexer::new("(3.14)");
+        let tokens = lexer.tokenize()?;
+
+        assert_eq!(
+            tokens,
+            vec![Token::LParen, Token::Number(3.14), Token::RParen]
+        );
+
+        Ok(())
+    }
+    
+
 }
