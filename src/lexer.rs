@@ -42,7 +42,7 @@ impl Lexer {
                 }
                 _ => {
                     if ch.is_digit(10) || (ch == '-' && self.peek_next_is_digit()) {
-                        tokens.push(self.read_number());
+                        tokens.push(self.read_number()?);
                     } else if is_symbol_start(ch) {
                         tokens.push(Token::Symbol(self.read_symbol()));
                     } else {
