@@ -1,5 +1,6 @@
 use std::error::Error;
 
+mod errors;
 mod lexer;
 mod object;
 
