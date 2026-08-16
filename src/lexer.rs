@@ -40,8 +40,101 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    pub fn tokenize(&mut self) -> Vec<Token> {
+        let mut tokens = Vec::new();
+        while let Some(t) = self.next_token() {
+            tokens.push(t);
+        }
+
+        tokens
+    }
+
     fn next_token(&mut self) -> Option<Token> {
-        todo!()
+        self.eat_whitespace();
+
+        match self.current_char? {
+            '(' => {
+                self.advance();
+                Some(Token::LParen)
+            }
+            ')' => {
+                self.advance();
+                Some(Token::RParen)
+            }
+            '"' => Some(Token::String(self.read_string())),
+            c if c.is_numeric() => {
+                // Tokenize number (integer or float)
+                let val = self.read_number();
+                if val.contains('.') {
+                    Some(Token::Float(val.parse().unwrap()))
+                } else {
+                    Some(Token::Integer(val.parse().unwrap()))
+                }
+            }
+            c if c.is_alphabetic() || self.binary_ops.contains(&c) => {
+                // Tokenize symbol, binary operator or keyword
+                let sym = self.read_symbol();
+                if self.keywords.contains(sym.as_str()) {
+                    Some(Token::Keyword(sym))
+                } else if self.binary_ops.contains(&sym.chars().next().unwrap()) {
+                    Some(Token::BinaryOp(sym))
+                } else {
+                    Some(Token::Symbol(sym))
+                }
+            }
+            _ => None,
+        }
+    }
+
+    fn eat_whitespace(&mut self) {
+        while let Some(c) = self.current_char {
+            if !c.is_whitespace() {
+                break;
+            }
+            self.advance();
+        }
+    }
+
+    fn read_string(&mut self) -> String {
+        let mut string = String::new();
+        self.advance(); // Skip the opening quote
+
+        while let Some(c) = self.current_char {
+            if c == '"' {
+                self.advance(); // Skip the closing quote
+                break;
+            }
+            string.push(c);
+            self.advance();
+        }
+
+        string
+    }
+
+    fn read_number(&mut self) -> String {
+        let mut number = String::new();
+        while let Some(c) = self.current_char {
+            if !c.is_numeric() && c != '.' {
+                break;
+            }
+            number.push(c);
+            self.advance();
+        }
+
+        number
+    }
+
+    fn read_symbol(&mut self) -> String {
+        let mut symbol = String::new();
+        while let Some(c) = self.current_char {
+            if c.is_whitespace() || c == '(' || c == ')' || c == '\'' {
+                break;
+            }
+            symbol.push(c);
+            self.advance();
+        }
+
+        symbol
     }
 
     fn advance(&mut self) -> Option<char> {
