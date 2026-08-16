@@ -1,5 +1,6 @@
 use std::{collections::HashSet, str::Chars};
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum Token {
     Integer(i64),
     Symbol(String),
@@ -140,5 +141,63 @@ impl<'a> Lexer<'a> {
     fn advance(&mut self) -> Option<char> {
         self.current_char = self.input.next();
         self.current_char
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_add() {
+        let tokens = Lexer::new("(+ 1 2)").tokenize();
+        assert_eq!(
+            tokens,
+            vec![
+                Token::LParen,
+                Token::BinaryOp("+".to_string()),
+                Token::Integer(1),
+                Token::Integer(2),
+                Token::RParen
+            ]
+        );
+    }
+
+    #[test]
+    fn test_area_of_cirlce() {
+        let program = "
+            (
+                (define r 10)
+                (define pi 314)
+                (* pi (* r r))
+            )
+        ";
+        let tokens = Lexer::new(program).tokenize();
+        assert_eq!(
+            tokens,
+            vec![
+                Token::LParen,
+                Token::LParen,
+                Token::Keyword("define".to_string()),
+                Token::Symbol("r".to_string()),
+                Token::Integer(10),
+                Token::RParen,
+                Token::LParen,
+                Token::Keyword("define".to_string()),
+                Token::Symbol("pi".to_string()),
+                Token::Integer(314),
+                Token::RParen,
+                Token::LParen,
+                Token::BinaryOp("*".to_string()),
+                Token::Symbol("pi".to_string()),
+                Token::LParen,
+                Token::BinaryOp("*".to_string()),
+                Token::Symbol("r".to_string()),
+                Token::Symbol("r".to_string()),
+                Token::RParen,
+                Token::RParen,
+                Token::RParen,
+            ]
+        );
     }
 }
