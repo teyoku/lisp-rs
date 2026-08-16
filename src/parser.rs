@@ -6,6 +6,7 @@ pub struct Parser {
 
 impl Parser {
     pub fn new(tokens: Vec<Token>) -> Self {
+        // Reversed tokens vec
         Self {
             tokens: tokens.into_iter().rev().collect(),
         }
@@ -22,7 +23,10 @@ impl Parser {
         let mut list = Vec::new();
         while let Some(token) = self.tokens.pop() {
             match token {
-                Token::Keyword(k) => list.push(Object::Keyword(k)),
+                Token::Keyword(k) => match k.as_str() {
+                    "true" | "false" => list.push(Object::Bool(k == "true")),
+                    _ => list.push(Object::Keyword(k)),
+                },
                 Token::BinaryOp(b) => list.push(Object::BinaryOp(b)),
                 Token::Integer(n) => list.push(Object::Integer(n)),
                 Token::Float(n) => list.push(Object::Float(n)),
