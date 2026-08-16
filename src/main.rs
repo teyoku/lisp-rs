@@ -7,6 +7,6 @@ mod parser;
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("Hello, World!");
-    
+
     Ok(())
 }
