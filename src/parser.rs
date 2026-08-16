@@ -15,7 +15,7 @@ impl Parser {
         let token = self.tokens.pop();
         if token != Some(Token::LParen) {
             return Err(ParseError {
-                err: format!("Expected '(' found '{:?}'", token),
+                err: format!("Expected LParen found '{:?}'", token),
             });
         }
 
