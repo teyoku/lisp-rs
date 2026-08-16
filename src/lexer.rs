@@ -24,10 +24,11 @@ impl<'a> Lexer<'a> {
         let mut chars = input.chars();
         let current_char = chars.next();
 
-        let keywords: HashSet<&str> =
-            vec!["define", "print", "lambda", "if", "cond", "else", "let"]
-                .into_iter()
-                .collect();
+        let keywords: HashSet<&str> = vec![
+            "define", "print", "lambda", "if", "cond", "else", "let", "true", "false",
+        ]
+        .into_iter()
+        .collect();
 
         let binary_ops: HashSet<char> = vec!['+', '-', '*', '/', '%', '<', '>', '=', '&', '|']
             .into_iter()
