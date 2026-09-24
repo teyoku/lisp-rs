@@ -22,6 +22,7 @@ pub enum TokenKind {
     RightParen,
 
     #[token("'")]
+    #[token("quote")]
     Quote,
 
     #[regex(r"-?[0-9]+", |lex| lex.slice().parse::<i64>().map_err(|_| LexError::InvalidNumber))]
