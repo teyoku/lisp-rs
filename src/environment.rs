@@ -12,7 +12,7 @@ use crate::{
 pub type EnvironmentRef = Rc<RefCell<Environment>>;
 
 /// A lexical environment containing bindings and an optional parent scope.
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct Environment {
     values: HashMap<String, Value>,
     parent: Option<Weak<RefCell<Environment>>>,
