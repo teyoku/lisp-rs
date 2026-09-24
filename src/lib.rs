@@ -1,3 +1,4 @@
+pub mod callable;
 pub mod ast;
 pub mod environment;
 pub mod error;
