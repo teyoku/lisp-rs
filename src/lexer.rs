@@ -121,7 +121,7 @@ impl<'a> Lexer<'a> {
                 }
             }
 
-            last_byte_pos = byte_range.start;
+            last_byte_pos = byte_range.end;
         }
 
         Ok(tokens)
