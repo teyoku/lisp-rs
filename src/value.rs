@@ -1,6 +1,8 @@
 use core::fmt;
 use std::rc::Rc;
 
+use crate::callable::{BuiltinFunction, Lambda};
+
 #[derive(Clone)]
 /// A value in the Lisp runtime.
 pub enum Value {
@@ -10,6 +12,9 @@ pub enum Value {
     String(Rc<str>),
     Symbol(Rc<str>),
     List(Rc<Vec<Value>>),
+
+    BuiltinFunction(BuiltinFunction),
+    Lambda(Rc<Lambda>),
 
     Nil,
 }
@@ -34,6 +39,9 @@ impl Value {
             Value::String(_) => "string",
             Value::Symbol(_) => "symbol",
             Value::List(_) => "list",
+            Value::BuiltinFunction(_) => "builtin:+",
+            Value::Lambda(_) => "lambda",
+
             Value::Nil => "nil",
         }
     }
@@ -59,6 +67,8 @@ impl fmt::Display for Value {
                 }
                 write!(f, ")")
             }
+            Value::BuiltinFunction(_) => write!(f, "<builtin:+>"),
+            Value::Lambda(_) => write!(f, "<lambda>"),
             Value::Nil => write!(f, "()"),
         }
     }
@@ -73,6 +83,8 @@ impl fmt::Debug for Value {
             Value::String(value) => f.debug_tuple("String").field(value).finish(),
             Value::Symbol(value) => f.debug_tuple("Symbol").field(value).finish(),
             Value::List(values) => f.debug_tuple("List").field(values).finish(),
+            Value::BuiltinFunction(_) => f.write_str("BuiltinFunction"),
+            Value::Lambda(_) => f.write_str("Lambda"),
             Value::Nil => f.write_str("Nil"),
         }
     }
