@@ -6,17 +6,20 @@ use crate::{
     lexer::{Span, Token, TokenKind},
 };
 
+/// Parses a sequence of lexer tokens into Lisp expressions.
 pub struct Parser {
     tokens: Peekable<IntoIter<Token>>,
 }
 
 impl Parser {
+    /// Creates a parser from a token sequence.
     pub fn new(tokens: Vec<Token>) -> Self {
         Self {
             tokens: tokens.into_iter().peekable(),
         }
     }
 
+    /// Parses all top-level expressions in the input.
     pub fn parse(&mut self) -> Result<Vec<Expr>, LispError> {
         let mut exprs = Vec::new();
         while self.tokens.peek().is_some() {
@@ -26,6 +29,7 @@ impl Parser {
         Ok(exprs)
     }
 
+    /// Parses one expression, including literals, quotes, and lists.
     fn parse_expr(&mut self) -> Result<Expr, LispError> {
         let token = self
             .tokens
@@ -77,6 +81,7 @@ impl Parser {
         }
     }
 
+    /// Parses a list after its opening parenthesis has been consumed.
     fn parse_list(&mut self, open_span: Span) -> Result<Expr, LispError> {
         let mut elements = Vec::new();
 

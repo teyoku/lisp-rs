@@ -3,6 +3,7 @@ use logos::Logos;
 use crate::error::{LispError, LispErrorKind};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+/// Errors produced while tokenizing Lisp source.
 pub enum LexError {
     #[default]
     UnexpectedCharacter,
@@ -11,6 +12,7 @@ pub enum LexError {
 }
 
 #[derive(Logos, Debug, Clone, PartialEq)]
+/// A lexical token recognized by the Lisp lexer.
 #[logos(error = LexError)]
 #[logos(skip r"[ \t\n\r\f]+")]
 #[logos(skip(r";[^\n\r]*", allow_greedy = true))]
@@ -46,6 +48,7 @@ pub enum TokenKind {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Location of a token in the source text.
 pub struct Span {
     pub start: usize,
     pub end: usize,
@@ -54,11 +57,13 @@ pub struct Span {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+/// A token and its location in the source text.
 pub struct Token {
     pub kind: TokenKind,
     pub span: Span,
 }
 
+/// Tokenizes Lisp source code into a sequence of tokens.
 pub struct Lexer<'a> {
     source: &'a str,
 }
@@ -69,6 +74,7 @@ impl<'a> Lexer<'a> {
         Self { source }
     }
 
+    /// Tokenizes the source, returning the first lexical error encountered.
     pub fn tokenize(self) -> Result<Vec<Token>, LispError> {
         let mut tokens = Vec::new();
         let mut logos_lexer = TokenKind::lexer(self.source);
